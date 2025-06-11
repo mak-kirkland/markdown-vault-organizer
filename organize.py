@@ -255,16 +255,51 @@ def update_tags_in_file(filepath, new_tags):
         print(f"📝 Updated tags in '{filepath}'")
         return True
 
+def update_indexes(tag_to_files_map, vault_root):
+    index_dir = os.path.join(vault_root, "_indexes")
+    os.makedirs(index_dir, exist_ok=True)
+
+    # Get all current index files
+    current_index_files = {
+        os.path.splitext(f)[0].lower(): os.path.join(index_dir, f)
+        for f in os.listdir(index_dir)
+        if f.endswith(".md")
+    }
+
+    # Determine the tags we now care about (consolidated ones)
+    updated_tags = set(tag_to_files_map.keys())
+
+    # Remove obsolete index files
+    for tag, path in current_index_files.items():
+        if tag not in updated_tags:
+            os.remove(path)
+            print(f"🗑️ Removed obsolete index: {tag}.md")
+
+    # Rebuild valid index files
+    for tag, files in tag_to_files_map.items():
+        lines = [f"# Index for `{tag}`\n"]
+        for filepath in sorted(files):
+            note_name = os.path.splitext(os.path.basename(filepath))[0]
+            relative_path = os.path.relpath(filepath, vault_root).replace("\\", "/")
+            lines.append(f"- [[{relative_path}|{note_name}]]")
+        content = "\n".join(lines)
+
+        index_path = os.path.join(index_dir, f"{tag}.md")
+        with open(index_path, "w", encoding="utf-8") as f:
+            f.write(content)
+        print(f"📄 Updated index for: {tag}")
+
 def organize_vault(vault_root):
     print(f"🔎 Scanning vault: {vault_root}")
     skip_folders = set(CATEGORY_RULES.values()) | {DEFAULT_FOLDER, "_indexes"}
+
+    tag_to_files_map = {}
 
     for root, _, files in os.walk(vault_root):
         rel_root = os.path.relpath(root, vault_root)
         if rel_root == ".":
             rel_root = ""
 
-        # Skip managed folders and _indexes
         if any(rel_root.startswith(f) for f in skip_folders) or "_indexes" in rel_root.split(os.sep):
             continue
 
@@ -272,7 +307,6 @@ def organize_vault(vault_root):
             if not filename.endswith(".md"):
                 continue
 
-            # Handle template files
             if filename.startswith("Template_"):
                 filepath = os.path.join(root, filename)
                 os.remove(filepath)
@@ -281,7 +315,6 @@ def organize_vault(vault_root):
 
             filepath = os.path.join(root, filename)
 
-            # Handle redirect files
             try:
                 with open(filepath, encoding="utf-8") as f:
                     content = f.read()
@@ -293,11 +326,9 @@ def organize_vault(vault_root):
                 print(f"⚠️ Error checking {filename}: {e}")
                 continue
 
-            # Process valid files
             yaml_data = parse_yaml_frontmatter(filepath)
             main_folder, subfolder, updated_tags = classify_file(yaml_data)
 
-            # Update tags if needed
             orig_tags = yaml_data.get("tags") or []
             orig_tags_lower = [t.lower() for t in orig_tags if isinstance(t, str)]
             updated_tags_lower = [t.lower() for t in updated_tags if isinstance(t, str)]
@@ -305,15 +336,17 @@ def organize_vault(vault_root):
             if set(updated_tags_lower) != set(orig_tags_lower):
                 update_tags_in_file(filepath, updated_tags)
 
-            # Build destination path
+            for tag in updated_tags_lower:
+                tag_to_files_map.setdefault(tag, []).append(filepath)
+
             target_folder = main_folder
             if subfolder:
                 target_folder = os.path.join(main_folder, subfolder)
 
-            # Move if needed
             if rel_root != target_folder:
                 move_file(filepath, target_folder, vault_root)
 
+    update_indexes(tag_to_files_map, vault_root)
     print("✅ Vault organization complete!")
 
 if __name__ == "__main__":
