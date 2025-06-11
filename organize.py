@@ -12,11 +12,8 @@ with open('config.yaml', 'r', encoding='utf-8') as f:
 VAULT_ROOT = config['vault_root']
 DEFAULT_FOLDER = config['default_folder']
 CATEGORY_RULES = config['category_rules']
-INFBOX_TO_CATEGORY_KEY = config['infobox_to_category_key']
 SUBCATEGORY_RULES = config['subcategory_rules']
 TAG_CONSOLIDATION = config['tag_consolidation']
-
-YAML_FRONTMATTER_REGEX = re.compile(r"(?s)^---\n(.*?)\n---\n")
 
 YAML_FRONTMATTER_REGEX = re.compile(r"(?s)^---\n(.*?)\n---\n")
 
@@ -109,34 +106,21 @@ def add_parent_tags_for_subcategories(tags):
     return list(tags_lower), added_tags
 
 def classify_file(yaml_data):
-    infobox = yaml_data.get("infobox", "")
     tags = yaml_data.get("tags") or []
-
-    # Get category from infobox if available
-    infobox_key = ""
-    if isinstance(infobox, str):
-        infobox_key = INFBOX_TO_CATEGORY_KEY.get(infobox.lower().strip(), "")
 
     # Normalize and consolidate all tags
     tags = [t.lower() for t in tags if isinstance(t, str)]
     tags = consolidate_tags(tags)
-
-    # Add infobox category as tag if not present
-    if infobox_key and infobox_key not in tags:
-        tags.append(infobox_key)
 
     # Ensure proper parent tags exist
     tags, _ = add_parent_tags_for_subcategories(tags)
 
     # Determine main folder
     main_folder = None
-    if infobox_key:
-        main_folder = CATEGORY_RULES.get(infobox_key)
-    if not main_folder:
-        for key, folder in CATEGORY_RULES.items():
-            if key.lower() in tags:
-                main_folder = folder
-                break
+    for key, folder in CATEGORY_RULES.items():
+        if key.lower() in tags:
+            main_folder = folder
+            break
 
     main_folder = main_folder or DEFAULT_FOLDER
 

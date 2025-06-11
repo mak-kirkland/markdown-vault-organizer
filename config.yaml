@@ -12,12 +12,6 @@ category_rules:
   "magic": "7_Magic"
   "dragons": "1_People"
 
-infobox_to_category_key:
-  "character": "characters"
-  "location": "locations"
-  "faction": "factions"
-  "item": "items"
-
 subcategory_rules:
   "2_Locations":
     "cities": "Cities"
