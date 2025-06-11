@@ -2,6 +2,7 @@ import os
 import re
 import shutil
 import yaml
+import json
 
 # === CONFIGURATION ===
 VAULT_ROOT = "obsidian_vault"
@@ -111,6 +112,10 @@ YAML_FRONTMATTER_REGEX = re.compile(r"(?s)^---\n(.*?)\n---\n")
 
 # === FUNCTIONS ===
 
+def display_title(title):
+    """Convert to human-readable title with spaces"""
+    return title.replace('_', ' ')
+
 def parse_yaml_frontmatter(filepath):
     try:
         with open(filepath, encoding="utf-8") as f:
@@ -138,13 +143,37 @@ def write_yaml_frontmatter(filepath, data, original_content):
         f.write(new_content)
 
 def consolidate_tags(tags):
-    """Apply all tag consolidation rules"""
+    """Apply all tag consolidation rules and remove replaced tags"""
     consolidated = set()
-    for tag in tags:
-        normalized_tag = tag.lower().strip()
-        # Replace with consolidated tag if exists, otherwise keep original
-        consolidated.add(TAG_CONSOLIDATION.get(normalized_tag, normalized_tag))
-    return sorted(list(consolidated))  # Sort for consistent output
+    replacements = set()
+
+    # First normalize all input tags (lowercase, replace underscores with spaces)
+    normalized_input_tags = {tag.lower().replace('_', ' ').strip() for tag in tags}
+
+    # Process each input tag
+    for input_tag in normalized_input_tags:
+        # Find the replacement (if any exists)
+        replacement = TAG_CONSOLIDATION.get(input_tag, input_tag)
+
+        # Add the replacement to our consolidated set
+        consolidated.add(replacement)
+
+        # If this tag was replaced, track the original
+        if replacement != input_tag:
+            replacements.add(input_tag)
+
+    # Now remove any tags that were replaced
+    final_tags = [tag for tag in consolidated if tag not in replacements]
+
+    # Convert back to the original tag format (with underscores if that was original)
+    def restore_formatting(tag):
+        # Check if original used underscores
+        for original_tag in tags:
+            if original_tag.lower().replace('_', ' ') == tag:
+                return original_tag.lower()  # preserve original formatting
+        return tag.replace(' ', '_')  # default to underscores
+
+    return sorted(restore_formatting(tag) for tag in final_tags)
 
 def add_parent_tags_for_subcategories(tags):
     """Add missing parent category tags based on SUBCATEGORY_RULES"""
@@ -255,6 +284,25 @@ def update_tags_in_file(filepath, new_tags):
         print(f"📝 Updated tags in '{filepath}'")
         return True
 
+def extract_yaml_header(title, tags, extra_fields=None):
+    yaml_data = {
+        'title': display_title(title),
+        'tags': [display_title(t).lower().replace(" ", "_") for t in tags]
+    }
+    if extra_fields:
+        yaml_data.update(extra_fields)
+
+    lines = ['---']
+    for key, value in yaml_data.items():
+        if isinstance(value, list):
+            lines.append(f"{key}:")
+            for item in value:
+                lines.append(f'  - {json.dumps(item) if isinstance(item, str) else item}')
+        else:
+            lines.append(f'{key}: {json.dumps(value) if isinstance(value, str) else value}')
+    lines.append('---\n')
+    return "\n".join(lines)
+
 def update_indexes(tag_to_files_map, vault_root):
     index_dir = os.path.join(vault_root, "_indexes")
     os.makedirs(index_dir, exist_ok=True)
@@ -275,19 +323,30 @@ def update_indexes(tag_to_files_map, vault_root):
             os.remove(path)
             print(f"🗑️ Removed obsolete index: {tag}.md")
 
-    # Rebuild valid index files
+    # Rebuild valid index files with proper tagging
     for tag, files in tag_to_files_map.items():
-        lines = [f"# Index for `{tag}`\n"]
+        # Create YAML frontmatter with the tag
+        yaml_header = extract_yaml_header(
+            f"Index: {display_title(tag)}",
+            [tag]  # Include the tag itself
+        )
+
+        # Create content with tag reference
+        lines = [
+            f"# Index for `{display_title(tag)}`",
+        ]
+
         for filepath in sorted(files):
             note_name = os.path.splitext(os.path.basename(filepath))[0]
             relative_path = os.path.relpath(filepath, vault_root).replace("\\", "/")
-            lines.append(f"- [[{relative_path}|{note_name}]]")
-        content = "\n".join(lines)
+            lines.append(f"- [[{relative_path}|{display_title(note_name)}]]")
+
+        content = yaml_header + "\n".join(lines)
 
         index_path = os.path.join(index_dir, f"{tag}.md")
         with open(index_path, "w", encoding="utf-8") as f:
             f.write(content)
-        print(f"📄 Updated index for: {tag}")
+        print(f"📄 Updated index for: {tag} (with tag references)")
 
 def organize_vault(vault_root):
     print(f"🔎 Scanning vault: {vault_root}")
