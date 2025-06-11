@@ -1,0 +1,107 @@
+# config.yaml
+vault_root: "obsidian_vault"
+default_folder: "8_Miscellaneous"
+
+category_rules:
+  "characters": "1_People"
+  "locations": "2_Locations"
+  "factions": "3_Factions"
+  "items": "4_Items"
+  "races": "5_Races"
+  "lore": "6_Lore"
+  "magic": "7_Magic"
+  "dragons": "1_People"
+
+infobox_to_category_key:
+  "character": "characters"
+  "location": "locations"
+  "faction": "factions"
+  "item": "items"
+
+subcategory_rules:
+  "2_Locations":
+    "cities": "Cities"
+    "towns": "Towns"
+    "establishments": "Establishments"
+    "nations": "Nations"
+    "wilderness": "Wilderness"
+    "ruins": "Ruins"
+    "continents": "Continents"
+    "roads": "Roads"
+    "fortifications": "Fortifications"
+  "3_Factions":
+    "nobility": "Nobility"
+  "4_Items":
+    "weapons": "Weapons"
+    "minerals": "Minerals"
+    "flora": "Flora"
+  "6_Lore":
+    "mythology": "Mythology"
+    "languages": "Languages"
+    "religion": "Religion"
+    "conflicts": "Conflicts"
+    "events": "Events"
+    "holidays": "Holidays"
+
+tag_consolidation:
+  # Fortifications
+  "forts": "fortifications"
+  "castles": "fortifications"
+
+  # Factions & Power Structures
+  "institutions": "factions"
+  "organisations": "factions"
+  "military units": "factions"
+  "mercenary bands": "factions"
+  "notable families": "factions"
+  "guilds": "factions"
+  "noble houses": "factions"
+
+  # Settlements
+  "settlement": "towns"
+  "towns_and_villages": "towns"
+  "towns and villages": "towns"
+  "baronies": "towns"
+  "human_realms": "nations"
+  "elven_realms": "nations"
+  "dwarven kingdoms": "nations"
+  "territorial_regions": "nations"
+  "territorial regions": "nations"
+
+  # Establishments
+  "inns": "establishments"
+  "brothels": "establishments"
+  "fighting pits": "establishments"
+
+  # Wilderness
+  "mountain ranges": "wilderness"
+  "mountain_ranges": "wilderness"
+  "islands": "wilderness"
+  "deserts": "wilderness"
+  "forests": "wilderness"
+  "lakes": "wilderness"
+  "seas": "wilderness"
+
+  # Conflicts
+  "wars": "conflicts"
+  "battles": "conflicts"
+  "dragon conquest": "conflicts"
+  "leontini wars": "conflicts"
+
+  # History
+  "ancient_civilizations": "history"
+
+  # Cultures & Races
+  "elves": "races"
+
+  # Items & Equipment
+  "artifacts": "items"
+  "runeblades": "weapons"
+
+  # Magic & Realms
+  "feywild": "magic"
+  "spirit world": "magic"
+  "creatures": "magic"
+
+  # Characters
+  "players": "characters"

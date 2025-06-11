@@ -4,121 +4,19 @@ import shutil
 import yaml
 import json
 
-# === CONFIGURATION ===
-VAULT_ROOT = "obsidian_vault"
-CATEGORY_RULES = {
-    "characters": "1_People",
-    "locations": "2_Locations",
-    "factions": "3_Factions",
-    "items": "4_Items",
-    "races": "5_Races",
-    "lore": "6_Lore",
-    "magic": "7_Magic",
-    "dragons": "1_People",
-}
+# Load configuration from YAML file
+with open('config.yaml', 'r', encoding='utf-8') as f:
+    config = yaml.safe_load(f)
 
-INFBOX_TO_CATEGORY_KEY = {
-    "character": "characters",
-    "location": "locations",
-    "faction": "factions",
-    "item": "items",
-}
+# Assign configuration to variables
+VAULT_ROOT = config['vault_root']
+DEFAULT_FOLDER = config['default_folder']
+CATEGORY_RULES = config['category_rules']
+INFBOX_TO_CATEGORY_KEY = config['infobox_to_category_key']
+SUBCATEGORY_RULES = config['subcategory_rules']
+TAG_CONSOLIDATION = config['tag_consolidation']
 
-DEFAULT_FOLDER = "8_Miscellaneous"
-
-SUBCATEGORY_RULES = {
-    "2_Locations": {
-        "cities": "Cities",
-        "towns": "Towns",
-        "establishments": "Establishments",
-        "nations": "Nations",
-        "wilderness": "Wilderness",
-        "ruins": "Ruins",
-        "continents": "Continents",
-        "roads": "Roads",
-        "fortifications": "Fortifications",
-    },
-    "3_Factions": {
-        "nobility": "Nobility",
-    },
-    "4_Items": {
-        "weapons": "Weapons",
-        "minerals": "Minerals",
-        "flora": "Flora",
-    },
-    "6_Lore": {
-        "mythology": "Mythology",
-        "languages": "Languages",
-        "religion": "Religion",
-        "conflicts": "Conflicts",
-        "events": "Events",
-        "holidays": "Holidays",
-    },
-}
-
-TAG_CONSOLIDATION = {
-    # Fortifications
-    "forts": "fortifications",
-    "castles": "fortifications",
-
-    # Factions & Power Structures
-    "institutions": "factions",
-    "organisations": "factions",
-    "military units": "factions",
-    "mercenary bands": "factions",
-    "notable families": "factions",
-    "guilds": "factions",
-    "noble houses": "factions",
-
-    # Settlements
-    "settlement": "towns",
-    "towns_and_villages": "towns",
-    "towns and villages": "towns",
-    "baronies": "towns",
-    "human_realms": "nations",
-    "elven_realms": "nations",
-    "dwarven kingdoms": "nations",
-    "territorial_regions": "nations",
-    "territorial regions": "nations",
-
-    # Establishments
-    "inns": "establishments",
-    "brothels": "establishments",
-    "fighting pits": "establishments",
-
-    # Wilderness
-    "mountain ranges": "wilderness",
-    "mountain_ranges": "wilderness",
-    "islands": "wilderness",
-    "deserts": "wilderness",
-    "forests": "wilderness",
-    "lakes": "wilderness",
-    "seas": "wilderness",
-
-    # Conflicts
-    "wars": "conflicts",
-    "battles": "conflicts",
-    "dragon conquest": "conflicts",
-    "leontini wars": "conflicts",
-
-    # History
-    "ancient_civilizations": "history",
-
-    # Cultures & Races
-    "elves": "races",
-
-    # Items & Equipment
-    "artifacts": "items",
-    "runeblades": "weapons",
-
-    # Magic & Realms
-    "feywild": "magic",
-    "spirit world": "magic",
-    "creatures": "magic",
-
-    # Characters
-    "players": "characters",
-}
+YAML_FRONTMATTER_REGEX = re.compile(r"(?s)^---\n(.*?)\n---\n")
 
 YAML_FRONTMATTER_REGEX = re.compile(r"(?s)^---\n(.*?)\n---\n")
 
