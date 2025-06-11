@@ -11,13 +11,10 @@ CATEGORY_RULES = {
     "locations": "2_Locations",
     "factions": "3_Factions",
     "items": "4_Items",
-    "magic": "5_Magic",
+    "races": "5_Races",
     "lore": "6_Lore",
-    "races": "7_Races",
-    "creatures": "8_Beastiary",
+    "magic": "7_Magic",
     "dragons": "1_People",
-    "elves": "7_Races",
-    "events": "6_Lore",
 }
 
 INFBOX_TO_CATEGORY_KEY = {
@@ -27,20 +24,15 @@ INFBOX_TO_CATEGORY_KEY = {
     "item": "items",
 }
 
-DEFAULT_FOLDER = "9_Miscellaneous"
+DEFAULT_FOLDER = "8_Miscellaneous"
 
 SUBCATEGORY_RULES = {
     "2_Locations": {
         "cities": "Cities",
         "towns": "Towns",
-        "inns": "Establishments",
-        "brothels": "Establishments",
-        "fighting pits": "Establishments",
+        "establishments": "Establishments",
         "nations": "Nations",
         "wilderness": "Wilderness",
-        "forests": "Wilderness",
-        "mountains": "Wilderness",
-        "seas": "Wilderness",
         "ruins": "Ruins",
         "continents": "Continents",
         "roads": "Roads",
@@ -51,49 +43,81 @@ SUBCATEGORY_RULES = {
     },
     "4_Items": {
         "weapons": "Weapons",
-        "armor": "Armor",
         "minerals": "Minerals",
         "flora": "Flora",
     },
     "6_Lore": {
-        "history": "History",
         "mythology": "Mythology",
         "languages": "Languages",
         "religion": "Religion",
-        "conflicts": "Conflicts",  # Consolidated wars/battles here
+        "conflicts": "Conflicts",
         "events": "Events",
         "holidays": "Holidays",
     },
 }
 
-# Unified tag consolidation mapping
 TAG_CONSOLIDATION = {
     # Fortifications
     "forts": "fortifications",
     "castles": "fortifications",
 
+    # Factions & Power Structures
     "institutions": "factions",
     "organisations": "factions",
     "military units": "factions",
     "mercenary bands": "factions",
-
-    "noble houses": "nobility",
     "notable families": "factions",
+    "guilds": "factions",
+    "noble houses": "factions",
 
     # Settlements
     "settlement": "towns",
     "towns_and_villages": "towns",
     "towns and villages": "towns",
-
-    # Geography
-    "mountain ranges": "mountains",
-    "mountain_ranges": "mountains",
+    "baronies": "towns",
+    "human_realms": "nations",
+    "elven_realms": "nations",
+    "dwarven kingdoms": "nations",
     "territorial_regions": "nations",
     "territorial regions": "nations",
 
+    # Establishments
+    "inns": "establishments",
+    "brothels": "establishments",
+    "fighting pits": "establishments",
+
+    # Wilderness
+    "mountain ranges": "wilderness",
+    "mountain_ranges": "wilderness",
+    "islands": "wilderness",
+    "deserts": "wilderness",
+    "forests": "wilderness",
+    "lakes": "wilderness",
+    "seas": "wilderness",
+
     # Conflicts
     "wars": "conflicts",
-    "battles": "conflicts"
+    "battles": "conflicts",
+    "dragon conquest": "conflicts",
+    "leontini wars": "conflicts",
+
+    # History
+    "ancient_civilizations": "history",
+
+    # Cultures & Races
+    "elves": "races",
+
+    # Items & Equipment
+    "artifacts": "items",
+    "runeblades": "weapons",
+
+    # Magic & Realms
+    "feywild": "magic",
+    "spirit world": "magic",
+    "creatures": "magic",
+
+    # Characters
+    "players": "characters",
 }
 
 YAML_FRONTMATTER_REGEX = re.compile(r"(?s)^---\n(.*?)\n---\n")
