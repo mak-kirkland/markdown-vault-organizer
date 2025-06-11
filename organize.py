@@ -9,34 +9,22 @@ VAULT_ROOT = "obsidian_vault"
 CATEGORY_RULES = {
     "characters": "1_People",
     "locations": "2_Locations",
-    "infobox character": "1_People",
-    "infobox location": "2_Locations",
     "factions": "3_Factions",
     "items": "4_Items",
-    "infobox item": "4_Items",
     "magic": "5_Magic",
     "lore": "6_Lore",
     "races": "7_Races",
-    "dragons": "1_People",
     "creatures": "8_Beastiary",
+    "dragons": "1_People",
     "elves": "7_Races",
     "events": "6_Lore",
 }
 
 INFBOX_TO_CATEGORY_KEY = {
     "character": "characters",
-    "characters": "characters",
-    "infobox character": "characters",
     "location": "locations",
-    "locations": "locations",
-    "infobox location": "locations",
     "faction": "factions",
-    "factions": "factions",
     "item": "items",
-    "items": "items",
-    "infobox item": "items",
-    "magic": "magic",
-    "lore": "lore",
 }
 
 DEFAULT_FOLDER = "9_Miscellaneous"
