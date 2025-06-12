@@ -45,30 +45,27 @@ tag_consolidation:
   # Factions & Power Structures
   "institutions": "factions"
   "organisations": "factions"
-  "military units": "factions"
-  "mercenary bands": "factions"
-  "notable families": "factions"
+  "military_units": "factions"
+  "mercenary_bands": "factions"
+  "notable_families": "factions"
   "guilds": "factions"
-  "noble houses": "factions"
+  "noble_houses": "factions"
 
   # Settlements
   "settlement": "towns"
   "towns_and_villages": "towns"
-  "towns and villages": "towns"
   "baronies": "towns"
   "human_realms": "nations"
   "elven_realms": "nations"
-  "dwarven kingdoms": "nations"
+  "dwarven_kingdoms": "nations"
   "territorial_regions": "nations"
-  "territorial regions": "nations"
 
   # Establishments
   "inns": "establishments"
   "brothels": "establishments"
-  "fighting pits": "establishments"
+  "fighting_pits": "establishments"
 
   # Wilderness
-  "mountain ranges": "wilderness"
   "mountain_ranges": "wilderness"
   "islands": "wilderness"
   "deserts": "wilderness"
@@ -79,8 +76,8 @@ tag_consolidation:
   # Conflicts
   "wars": "conflicts"
   "battles": "conflicts"
-  "dragon conquest": "conflicts"
-  "leontini wars": "conflicts"
+  "dragon_conquest": "conflicts"
+  "leontini_wars": "conflicts"
 
   # History
   "ancient_civilizations": "history"
@@ -94,7 +91,7 @@ tag_consolidation:
 
   # Magic & Realms
   "feywild": "magic"
-  "spirit world": "magic"
+  "spirit_world": "magic"
   "creatures": "magic"
 
   # Characters

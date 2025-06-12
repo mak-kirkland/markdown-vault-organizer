@@ -54,33 +54,19 @@ def consolidate_tags(tags):
     consolidated = set()
     replacements = set()
 
-    # First normalize all input tags (lowercase, replace underscores with spaces)
-    normalized_input_tags = {tag.lower().replace('_', ' ').strip() for tag in tags}
-
     # Process each input tag
-    for input_tag in normalized_input_tags:
+    for input_tag in tags:
         # Find the replacement (if any exists)
         replacement = TAG_CONSOLIDATION.get(input_tag, input_tag)
-
         # Add the replacement to our consolidated set
         consolidated.add(replacement)
-
         # If this tag was replaced, track the original
         if replacement != input_tag:
             replacements.add(input_tag)
 
     # Now remove any tags that were replaced
     final_tags = [tag for tag in consolidated if tag not in replacements]
-
-    # Convert back to the original tag format (with underscores if that was original)
-    def restore_formatting(tag):
-        # Check if original used underscores
-        for original_tag in tags:
-            if original_tag.lower().replace('_', ' ') == tag:
-                return original_tag.lower()  # preserve original formatting
-        return tag.replace(' ', '_')  # default to underscores
-
-    return sorted(restore_formatting(tag) for tag in final_tags)
+    return final_tags
 
 def add_parent_tags_for_subcategories(tags):
     """Add missing parent category tags based on SUBCATEGORY_RULES"""
