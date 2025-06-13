@@ -19,6 +19,9 @@ YAML_FRONTMATTER_REGEX = re.compile(r"(?s)^---\n(.*?)\n---\n")
 
 # === FUNCTIONS ===
 
+def normalize_tags(tags):
+    return [t.lower() for t in tags if isinstance(t, str)]
+
 def parse_yaml_frontmatter(filepath):
     try:
         with open(filepath, encoding="utf-8") as f:
@@ -73,24 +76,24 @@ def consolidate_tags(tags):
 
 def add_parent_tags_for_subcategories(tags):
     """Add missing parent category tags based on SUBCATEGORY_RULES"""
-    tags_lower = set(t.lower() for t in tags if isinstance(t, str))
+    tags = set(tags)
     added_tags = False
 
     for parent_tag, subcats in SUBCATEGORY_RULES.items():
         parent_tag = parent_tag.lower()
         for subcat in subcats:
             subcat = subcat.lower()
-            if subcat in tags_lower and parent_tag not in tags_lower:
-                tags_lower.add(parent_tag)
+            if subcat in tags and parent_tag not in tags:
+                tags.add(parent_tag)
                 added_tags = True
 
-    return list(tags_lower), added_tags
+    return list(tags), added_tags
 
 def classify_file(yaml_data):
     tags = yaml_data.get("tags") or []
 
     # Normalize and consolidate all tags
-    tags = [t.lower() for t in tags if isinstance(t, str)]
+    tags = normalize_tags(tags)
     tags = consolidate_tags(tags)
 
     # Ensure proper parent tags exist
@@ -228,8 +231,8 @@ def organize_vault(vault_root):
             main_folder, subfolder, updated_tags = classify_file(yaml_data)
 
             orig_tags = yaml_data.get("tags") or []
-            orig_tags_lower = [t.lower() for t in orig_tags if isinstance(t, str)]
-            updated_tags_lower = [t.lower() for t in updated_tags if isinstance(t, str)]
+            orig_tags_lower = normalize_tags(orig_tags)
+            updated_tags_lower = normalize_tags(updated_tags)
 
             if set(updated_tags_lower) != set(orig_tags_lower):
                 update_tags_in_file(filepath, updated_tags)
