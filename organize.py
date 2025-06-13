@@ -120,12 +120,8 @@ def move_file(filepath, dest_folder, vault_root):
     filename = os.path.basename(filepath)
     dest_path = os.path.join(dest_path_folder, filename)
 
-    # Handle naming conflicts
-    base, ext = os.path.splitext(filename)
-    count = 1
-    while os.path.exists(dest_path):
-        dest_path = os.path.join(dest_path_folder, f"{base}_{count}{ext}")
-        count += 1
+    if os.path.exists(dest_path):
+        raise FileExistsError(f"❌ File already exists at destination: {dest_path}")
 
     print(f"📁 Moving '{filename}' to '{dest_folder}/'")
     shutil.move(filepath, dest_path)
