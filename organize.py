@@ -136,22 +136,15 @@ def update_tags_in_file(filepath, new_tags):
         return False
 
     match = YAML_FRONTMATTER_REGEX.match(content)
-    if not match:
-        # Create new frontmatter if none exists
-        yaml_data = {"tags": new_tags}
-        new_yaml = yaml.safe_dump(yaml_data, sort_keys=False).strip()
-        new_content = f"---\n{new_yaml}\n---\n\n{content}"
-        with open(filepath, "w", encoding="utf-8") as f:
-            f.write(new_content)
-        print(f"📝 Added new YAML frontmatter with tags in '{filepath}'")
-        return True
-    else:
-        # Update existing frontmatter
+    if match:
         yaml_data = yaml.safe_load(match.group(1)) or {}
-        yaml_data['tags'] = new_tags
-        write_yaml_frontmatter(filepath, yaml_data, content)
-        print(f"📝 Updated tags in '{filepath}'")
-        return True
+    else:
+        yaml_data = {}
+
+    yaml_data['tags'] = new_tags
+    write_yaml_frontmatter(filepath, yaml_data, content)
+    print(f"📝 Updated tags in '{filepath}'")
+    return True
 
 def extract_yaml_header(title, tags, extra_fields=None):
     yaml_data = {
