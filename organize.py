@@ -71,21 +71,13 @@ def consolidate_tags(tags):
 def add_parent_tags_for_subcategories(tags):
     """Add missing parent category tags based on SUBCATEGORY_RULES"""
     tags_lower = set(t.lower() for t in tags if isinstance(t, str))
-
-    # Build mapping of subcategory tags to their parent categories
-    subcat_to_parent = {}
-    for parent_folder, subcats in SUBCATEGORY_RULES.items():
-        parent_tags = [k for k, v in CATEGORY_RULES.items() if v == parent_folder]
-        for subcat_tag in subcats.keys():
-            for ptag in parent_tags:
-                subcat_to_parent[subcat_tag.lower()] = ptag.lower()
-
-    # Add any missing parent tags
     added_tags = False
-    for tag in tags_lower.copy():
-        if tag in subcat_to_parent:
-            parent_tag = subcat_to_parent[tag]
-            if parent_tag not in tags_lower:
+
+    for parent_tag, subcats in SUBCATEGORY_RULES.items():
+        parent_tag = parent_tag.lower()
+        for subcat in subcats:
+            subcat = subcat.lower()
+            if subcat in tags_lower and parent_tag not in tags_lower:
                 tags_lower.add(parent_tag)
                 added_tags = True
 
@@ -102,21 +94,22 @@ def classify_file(yaml_data):
     tags, _ = add_parent_tags_for_subcategories(tags)
 
     # Determine main folder
-    main_folder = None
+    main_key = None
     for key, folder in CATEGORY_RULES.items():
         if key.lower() in tags:
-            main_folder = folder
+            main_key = key
             break
 
-    main_folder = main_folder or DEFAULT_FOLDER
+    main_folder = CATEGORY_RULES.get(main_key, DEFAULT_FOLDER)
 
     # Determine subfolder
     subfolder = None
-    subcats = SUBCATEGORY_RULES.get(main_folder, {})
-    for tag in tags:
-        if tag in subcats:
-            subfolder = subcats[tag]
-            break
+    if main_key:
+        subcats = SUBCATEGORY_RULES.get(main_key, [])
+        for tag in tags:
+            if tag in subcats:
+                subfolder = tag.capitalize()
+                break
 
     return main_folder, subfolder, tags
 

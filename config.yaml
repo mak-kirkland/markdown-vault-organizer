@@ -13,29 +13,32 @@ category_rules:
   "dragons": "1_People"
 
 subcategory_rules:
-  "2_Locations":
-    "cities": "Cities"
-    "towns": "Towns"
-    "establishments": "Establishments"
-    "nations": "Nations"
-    "wilderness": "Wilderness"
-    "ruins": "Ruins"
-    "continents": "Continents"
-    "roads": "Roads"
-    "fortifications": "Fortifications"
-  "3_Factions":
-    "nobility": "Nobility"
-  "4_Items":
-    "weapons": "Weapons"
-    "minerals": "Minerals"
-    "flora": "Flora"
-  "6_Lore":
-    "mythology": "Mythology"
-    "languages": "Languages"
-    "religion": "Religion"
-    "conflicts": "Conflicts"
-    "events": "Events"
-    "holidays": "Holidays"
+  "locations":
+    - "cities"
+    - "towns"
+    - "establishments"
+    - "nations"
+    - "wilderness"
+    - "ruins"
+    - "continents"
+    - "roads"
+    - "fortifications"
+
+  "factions":
+    - "nobility"
+
+  "items":
+    - "weapons"
+    - "minerals"
+    - "flora"
+
+  "lore":
+    - "mythology"
+    - "languages"
+    - "religion"
+    - "conflicts"
+    - "events"
+    - "holidays"
 
 tag_consolidation:
   # Fortifications
