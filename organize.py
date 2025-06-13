@@ -19,10 +19,6 @@ YAML_FRONTMATTER_REGEX = re.compile(r"(?s)^---\n(.*?)\n---\n")
 
 # === FUNCTIONS ===
 
-def display_title(title):
-    """Convert to human-readable title with spaces"""
-    return title.replace('_', ' ')
-
 def parse_yaml_frontmatter(filepath):
     try:
         with open(filepath, encoding="utf-8") as f:
@@ -153,25 +149,6 @@ def update_tags_in_file(filepath, new_tags):
     print(f"📝 Updated tags in '{filepath}'")
     return True
 
-def extract_yaml_header(title, tags, extra_fields=None):
-    yaml_data = {
-        'title': display_title(title),
-        'tags': [display_title(t).lower().replace(" ", "_") for t in tags]
-    }
-    if extra_fields:
-        yaml_data.update(extra_fields)
-
-    lines = ['---']
-    for key, value in yaml_data.items():
-        if isinstance(value, list):
-            lines.append(f"{key}:")
-            for item in value:
-                lines.append(f'  - {json.dumps(item) if isinstance(item, str) else item}')
-        else:
-            lines.append(f'{key}: {json.dumps(value) if isinstance(value, str) else value}')
-    lines.append('---\n')
-    return "\n".join(lines)
-
 def update_indexes(tag_to_files_map, vault_root):
     index_dir = os.path.join(vault_root, "_indexes")
     os.makedirs(index_dir, exist_ok=True)
@@ -194,23 +171,16 @@ def update_indexes(tag_to_files_map, vault_root):
 
     # Rebuild valid index files with proper tagging
     for tag, files in tag_to_files_map.items():
-        # Create YAML frontmatter with the tag
-        yaml_header = extract_yaml_header(
-            f"Index: {display_title(tag)}",
-            [tag]  # Include the tag itself
-        )
-
         # Create content with tag reference
         lines = [
-            f"# Index for `{display_title(tag)}`",
+            f"# Index for #{tag}",
         ]
 
         for filepath in sorted(files):
             note_name = os.path.splitext(os.path.basename(filepath))[0]
-            relative_path = os.path.relpath(filepath, vault_root).replace("\\", "/")
-            lines.append(f"- [[{relative_path}|{display_title(note_name)}]]")
+            lines.append(f"- [[{note_name}]]")
 
-        content = yaml_header + "\n".join(lines)
+        content = "\n".join(lines)
 
         index_path = os.path.join(index_dir, f"{tag}.md")
         with open(index_path, "w", encoding="utf-8") as f:
