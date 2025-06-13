@@ -43,9 +43,16 @@ def parse_yaml_frontmatter(filepath):
 
 def write_yaml_frontmatter(filepath, data, original_content):
     new_yaml = yaml.safe_dump(data, sort_keys=False).strip()
-    def replacer(match):
-        return f"---\n{new_yaml}\n---\n"
-    new_content = YAML_FRONTMATTER_REGEX.sub(replacer, original_content, count=1)
+
+    if YAML_FRONTMATTER_REGEX.search(original_content):
+        # Replace existing frontmatter
+        def replacer(match):
+            return f"---\n{new_yaml}\n---\n"
+        new_content = YAML_FRONTMATTER_REGEX.sub(replacer, original_content, count=1)
+    else:
+        # No frontmatter exists, prepend new frontmatter block
+        new_content = f"---\n{new_yaml}\n---\n\n{original_content}"
+
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(new_content)
 
