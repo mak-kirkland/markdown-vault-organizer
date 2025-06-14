@@ -233,7 +233,9 @@ def update_indexes(tag_to_files_map, vault_root):
 
 def organize_vault(vault_root):
     print(f"🔎 Scanning vault: {vault_root}")
-    skip_folders = set(CATEGORY_RULES.values()) | {DEFAULT_FOLDER, "_indexes"}
+
+    # Only skip _indexes folder explicitly; allow traversal into all others
+    skip_folders = {"_indexes"}
 
     tag_to_files_map = {}
 
@@ -242,7 +244,8 @@ def organize_vault(vault_root):
         if rel_root == ".":
             rel_root = ""
 
-        if any(rel_root.startswith(f) for f in skip_folders) or "_indexes" in rel_root.split(os.sep):
+        # Skip _indexes folder anywhere in path
+        if "_indexes" in rel_root.split(os.sep):
             continue
 
         for filename in files:
@@ -251,6 +254,7 @@ def organize_vault(vault_root):
 
             filepath = os.path.join(root, filename)
 
+            # Skip template files and redirects as before
             if filename.startswith("Template_"):
                 os.remove(filepath)
                 print(f"🗑️ Deleted template: {filename}")
@@ -280,10 +284,20 @@ def organize_vault(vault_root):
             for tag in updated_tags_lower:
                 tag_to_files_map.setdefault(tag, []).append(filepath)
 
+            # Determine target folder relative to vault root
             target_folder = subfolder if subfolder else main_folder
+            target_folder_norm = os.path.normpath(target_folder)
 
-            if rel_root != target_folder:
-                move_file(filepath, target_folder, vault_root)
+            # Current file folder relative to vault root
+            file_current_folder = os.path.relpath(root, vault_root)
+            file_current_folder_norm = os.path.normpath(file_current_folder)
+
+            # Move if current folder is different from target folder
+            if file_current_folder_norm.lower() != target_folder_norm.lower():
+                try:
+                    move_file(filepath, target_folder, vault_root)
+                except FileExistsError as e:
+                    print(f"⚠️ Skipped moving due to existing file: {e}")
 
     update_indexes(tag_to_files_map, vault_root)
     print("✅ Vault organization complete!")
