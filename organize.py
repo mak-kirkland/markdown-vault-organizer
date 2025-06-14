@@ -218,9 +218,7 @@ def update_indexes(tag_to_files_map, vault_root):
     # Rebuild valid index files with proper tagging
     for tag, files in tag_to_files_map.items():
         # Create content with tag reference
-        lines = [
-            f"# Index for #{tag}",
-        ]
+        lines = [f"# Index for #{tag}"]
 
         for filepath in sorted(files):
             note_name = os.path.splitext(os.path.basename(filepath))[0]
@@ -251,13 +249,12 @@ def organize_vault(vault_root):
             if not filename.endswith(".md"):
                 continue
 
+            filepath = os.path.join(root, filename)
+
             if filename.startswith("Template_"):
-                filepath = os.path.join(root, filename)
                 os.remove(filepath)
                 print(f"🗑️ Deleted template: {filename}")
                 continue
-
-            filepath = os.path.join(root, filename)
 
             try:
                 with open(filepath, encoding="utf-8") as f:
