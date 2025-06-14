@@ -14,18 +14,23 @@ category_rules:
 
 subcategory_rules:
   "locations":
-    - "cities"
-    - "towns"
+    - "settlements":
+      - "cities"
+      - "towns"
+      - "roads"
     - "establishments"
     - "nations"
-    - "wilderness"
+    - "wilderness":
+      - "forests"
+      - "mountains"
+      - "seas"
+      - "wetlands"
+    - "fortifications"
     - "ruins"
     - "continents"
-    - "roads"
-    - "fortifications"
 
   "factions":
-    - "nobility"
+    - "houses"
 
   "items":
     - "weapons"
@@ -33,11 +38,11 @@ subcategory_rules:
     - "flora"
 
   "lore":
+    - "history"
     - "mythology"
     - "languages"
     - "religion"
     - "conflicts"
-    - "events"
     - "holidays"
 
 tag_consolidation:
@@ -50,9 +55,13 @@ tag_consolidation:
   "organisations": "factions"
   "military_units": "factions"
   "mercenary_bands": "factions"
-  "notable_families": "factions"
+  "notable_families": "houses"
+  "familys": "houses"
   "guilds": "factions"
-  "noble_houses": "factions"
+  "noble_houses": "houses"
+  "crime": "factions"
+  "factionss": "factions"
+  "governments": "factions"
 
   # Settlements
   "settlement": "towns"
@@ -62,6 +71,11 @@ tag_consolidation:
   "elven_realms": "nations"
   "dwarven_kingdoms": "nations"
   "territorial_regions": "nations"
+  "national_governmentss": "nations"
+  "palinor": "commonwealth"
+  "greystone": "valand"
+  "republic_of_ilia": "ilia"
+  "urenos": "locations"
 
   # Establishments
   "inns": "establishments"
@@ -69,12 +83,9 @@ tag_consolidation:
   "fighting_pits": "establishments"
 
   # Wilderness
-  "mountain_ranges": "wilderness"
-  "islands": "wilderness"
+  "mountain_ranges": "mountains"
+  "lakes": "wetlands"
   "deserts": "wilderness"
-  "forests": "wilderness"
-  "lakes": "wilderness"
-  "seas": "wilderness"
 
   # Conflicts
   "wars": "conflicts"
@@ -82,8 +93,11 @@ tag_consolidation:
   "dragon_conquest": "conflicts"
   "leontini_wars": "conflicts"
 
-  # History
+  # Lore
   "ancient_civilizations": "history"
+  "time": "lore"
+  "documents": "history"
+  "events": "history"
 
   # Cultures & Races
   "elves": "races"
@@ -91,6 +105,8 @@ tag_consolidation:
   # Items & Equipment
   "artifacts": "items"
   "runeblades": "weapons"
+  "technology": "items"
+  "plantss": "flora"
 
   # Magic & Realms
   "feywild": "magic"
