@@ -87,50 +87,48 @@ def write_yaml_frontmatter(filepath, data, original_content):
 
 def consolidate_tags(tags):
     """Apply all tag consolidation rules and remove replaced tags"""
-    consolidated = set()
-    replacements = set()
+    consolidated = []
+    replaced_tags = set()
 
-    # Process each input tag
     for input_tag in tags:
-        # Find the replacement (if any exists)
         replacement = TAG_CONSOLIDATION.get(input_tag, input_tag)
-        # Add the replacement to our consolidated set
-        consolidated.add(replacement)
-        # If this tag was replaced, track the original
+        if replacement not in consolidated:
+            consolidated.append(replacement)
         if replacement != input_tag:
-            replacements.add(input_tag)
+            replaced_tags.add(input_tag)
 
-    # Now remove any tags that were replaced
-    final_tags = [tag for tag in consolidated if tag not in replacements]
+    # Remove replaced tags from consolidated list if they are still there
+    final_tags = [tag for tag in consolidated if tag not in replaced_tags]
     return final_tags
 
 def add_parent_tags_for_subcategories(tags):
-    tags = set(tags)
+    tags_set = set(tags)
     added_tags = False
 
-    for tag in list(tags):
+    for tag in tags:
         path = SUBCATEGORY_PATHS.get(tag)
         if not path:
             continue
 
-        parts = path.split("/")  # e.g. "6_Lore/Mythology" -> ["6_Lore", "Mythology"]
-        top_level_folder = parts[0].lower()  # e.g. "6_lore"
-
-        # Reverse lookup folder -> tag
+        parts = path.split("/")
+        top_level_folder = parts[0].lower()
         top_level_tag = FOLDER_TO_CATEGORY.get(top_level_folder)
 
-        if top_level_tag and top_level_tag not in tags:
-            tags.add(top_level_tag)
+        # Add top level tag if missing, append at the end
+        if top_level_tag and top_level_tag not in tags_set:
+            tags.append(top_level_tag)
+            tags_set.add(top_level_tag)
             added_tags = True
 
-        # Also add other intermediate parts if you want
+        # Add intermediate parts if missing, append at the end
         for part in parts[1:-1]:
             normalized_part = part.lower()
-            if normalized_part not in tags:
-                tags.add(normalized_part)
+            if normalized_part not in tags_set:
+                tags.append(normalized_part)
+                tags_set.add(normalized_part)
                 added_tags = True
 
-    return list(tags), added_tags
+    return tags, added_tags
 
 def classify_file(yaml_data):
     tags = yaml_data.get("tags") or []
