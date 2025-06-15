@@ -17,6 +17,27 @@ TAG_CONSOLIDATION = config['tag_consolidation']
 
 YAML_FRONTMATTER_REGEX = re.compile(r"(?s)^---\n(.*?)\n---\n")
 
+def flatten_subcategory_order(subcategory_rules):
+    ordered_tags = []
+
+    def walk(node):
+        if isinstance(node, list):
+            for item in node:
+                walk(item)
+        elif isinstance(node, dict):
+            for key, val in node.items():
+                ordered_tags.append(key.lower())
+                walk(val)
+        elif isinstance(node, str):
+            ordered_tags.append(node.lower())
+
+    for cat_key, branches in subcategory_rules.items():
+        walk(branches)
+
+    return ordered_tags
+
+SUBCATEGORY_ORDER = flatten_subcategory_order(SUBCATEGORY_RULES)
+
 def build_subcategory_paths(subcategory_rules, category_rules):
     flat_map = {}
 
@@ -138,25 +159,28 @@ def classify_file(yaml_data):
 
     tags, _ = add_parent_tags_for_subcategories(tags)
 
-    # Find matching category keys by lowercase match
     matching_main_keys = [key for key in CATEGORY_RULES if key.lower() in tags]
 
     if not matching_main_keys:
         main_folder = DEFAULT_FOLDER
     else:
-        # Use the first matching key's folder (or refine logic)
         main_folder = CATEGORY_RULES[matching_main_keys[0]]
 
-    # Determine subfolder
-    subfolder = None
-    max_depth = -1
+    candidate_subfolders = []
+
     for tag in tags:
         sub_path = SUBCATEGORY_PATHS.get(tag)
         if sub_path and sub_path.lower().startswith(main_folder.lower()):
             depth = sub_path.count("/")
-            if depth > max_depth:
-                subfolder = sub_path
-                max_depth = depth
+            order_index = SUBCATEGORY_ORDER.index(tag) if tag in SUBCATEGORY_ORDER else 1_000_000
+            candidate_subfolders.append((depth, order_index, sub_path))
+
+    if candidate_subfolders:
+        # Sort by descending depth, then ascending order_index
+        candidate_subfolders.sort(key=lambda x: (-x[0], x[1]))
+        subfolder = candidate_subfolders[0][2]
+    else:
+        subfolder = None
 
     return main_folder, subfolder, tags
 

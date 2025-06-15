@@ -14,6 +14,7 @@ category_rules:
 
 subcategory_rules:
   "locations":
+    - "ruins"
     - "settlements":
       - "cities"
       - "towns"
@@ -26,7 +27,6 @@ subcategory_rules:
       - "seas"
       - "wetlands"
     - "fortifications"
-    - "ruins"
     - "continents"
 
   "factions":
