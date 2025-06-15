@@ -248,7 +248,7 @@ def update_indexes(tag_to_files_map, vault_root):
 
         content = "\n".join(lines)
 
-        index_path = os.path.join(index_dir, f"{tag}.md")
+        index_path = os.path.join(index_dir, f"_{tag}.md")
         with open(index_path, "w", encoding="utf-8") as f:
             f.write(content)
         print(f"📄 Updated index for: {tag} (with tag references)")
