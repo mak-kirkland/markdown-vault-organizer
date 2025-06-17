@@ -1,6 +1,6 @@
 # Obsidian Vault Organizer 🗃️
 
-This script automatically organizes an Obsidian vault by parsing tags in your Markdown files and moving them into structured folders based on configurable category and subcategory rules. It also updates tag-based indexes and cleans up unwanted files like redirects and templates.
+This script automatically organizes an Obsidian vault by parsing tags in your Markdown files and moving them into structured folders based on configurable category and subcategory rules.
 
 🧭 If you need to convert a MediaWiki XML dump into a clean, tag-driven Obsidian vault, check out my [MediaWiki to Obsidian Converter](https://github.com/mak-kirkland/mediawiki-to-obsidian).
 
@@ -9,7 +9,7 @@ This script automatically organizes an Obsidian vault by parsing tags in your Ma
 - 🏷️ Normalizes, consolidates, and inherits parent tags
 - 🧠 Infers top-level categories and nested subfolders from tags
 - 🛠️ Updates YAML frontmatter with cleaned tag lists
-- 📚 Maintains _indexes/ folder with tag-based note listings
+- 📚 Updates _indexes/ folder with tag-based note listings
 - 🧹 Deletes MediaWiki-style redirects and templates
 - 🔄 Works recursively across the whole vault regardless of current structure
 - 🔍 Verbose mode for detailed output and easier troubleshooting
