@@ -59,7 +59,7 @@ python organize_vault.py
 ## 🗂️ Output Structure
 
 ```text
-obsidian_vault/
+vault_root/
 ├── 1_People/
 │   └── Character_Name.md
 ├── 2_Locations/
