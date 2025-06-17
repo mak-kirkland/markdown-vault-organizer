@@ -272,27 +272,8 @@ def organize_vault(vault_root):
                 continue
 
             filepath = os.path.join(root, filename)
-
-            # Skip template files and redirects as before
-            if filename.startswith("Template_"):
-                os.remove(filepath)
-                print(f"🗑️ Deleted template: {filename}")
-                continue
-
-            try:
-                with open(filepath, encoding="utf-8") as f:
-                    content = f.read()
-                if YAML_FRONTMATTER_REGEX.sub("", content).strip().startswith("1.  REDIRECT "):
-                    os.remove(filepath)
-                    print(f"🗑️ Deleted redirect: {filename}")
-                    continue
-            except Exception as e:
-                print(f"⚠️ Error checking {filename}: {e}")
-                continue
-
             yaml_data = parse_yaml_frontmatter(filepath)
             main_folder, subfolder, updated_tags = classify_file(yaml_data)
-
             orig_tags = yaml_data.get("tags") or []
             orig_tags_lower = normalize_tags(orig_tags)
             updated_tags_lower = normalize_tags(updated_tags)
