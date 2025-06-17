@@ -12,6 +12,7 @@ This script automatically organizes an Obsidian vault by parsing tags in your Ma
 - 📚 Maintains _indexes/ folder with tag-based note listings
 - 🧹 Deletes MediaWiki-style redirects and templates
 - 🔄 Works recursively across the whole vault regardless of current structure
+- 🔍 Verbose mode for detailed output and easier troubleshooting
 
 --- 
 
@@ -20,7 +21,7 @@ This script automatically organizes an Obsidian vault by parsing tags in your Ma
 - Python 3.8+
 - A valid config.yaml with folder/tag rules (see below)
 
-Install Python dependencies (if any are required):
+Install Python dependencies:
 
 ```bash
 pip install -r requirements.txt
@@ -53,8 +54,12 @@ tag_consolidation:
 ## 🚀 Usage
 
 ```bash
-python organize_vault.py
+python organize_vault.py [--verbose]
 ```
+
+| Argument    | Description           |
+| ----------- | --------------------- |
+| `--verbose` | Enable vebose logging |
 
 ## 🗂️ Output Structure
 
