@@ -1,40 +1,82 @@
-# obsidian-organizer
+# Obsidian Vault Organizer 🗃️
 
-Move .md files in a "flat" Obsidian vault into a folder and subfolder hierarchy, according to user-defined mapping rules.
+This script automatically organizes an Obsidian vault by parsing tags in your Markdown files and moving them into structured folders based on configurable category and subcategory rules. It also updates tag-based indexes and cleans up unwanted files like redirects and templates.
 
-The script checks the "tags" field of the YAML frontmatter of each markdown file, and moves the file to the folder associated with that tag, defined in the config.yaml file.
+## ✨ Features
+- 📁 Automatically moves notes into structured folders by tag
+- 🏷️ Normalizes, consolidates, and inherits parent tags
+- 🧠 Infers top-level categories and nested subfolders from tags
+- 🛠️ Updates YAML frontmatter with cleaned tag lists
+- 📚 Maintains _indexes/ folder with tag-based note listings
+- 🧹 Deletes MediaWiki-style redirects and templates
+- 🔄 Works recursively across the whole vault regardless of current structure
 
-Note that indexes for each tag are generated. So for each tag, we have a page in `_indexes` which contains a list of links to all pages using that tag.
+--- 
 
-There are 3 important mappings:
-1. CATEGORY_RULES
-   ```yaml
-   "tag" : "FOLDER NAME"
-   ```
+## 📦 Requirements
 
-   This defines the top-level structure.
-   
-2. SUBCATEGORY_RULES
-   ```yaml
-   "top_level_tag1" :
-   - "tag1"
-   - "tag2"
-   - "tag3"
-   "top_level_tag2" :
-   - "tag4"
-   - "tag5"
-   ```
+- Python 3.8+
+- A valid config.yaml with folder/tag rules (see below)
 
-   This defines the subfolders within the main category folders. E.g we can define a "locations" top-level category, with subcategories "cities", "towns" etc.
-   This would automatically tag all "cities" with a "locations" tag, and move it into "Locations/Cities/file.md"
+Install Python dependencies (if any are required):
 
-3. TAG_CONSOLIDATION
-   ```yaml
-   "replacement_tag" : "original_tag"
-   ```
+```bash
+pip install -r requirements.txt
+```
 
-   Sometimes we might have gone a little crazy and made our tags too granular. Here we can consolidate them, e.g "human_realms" and "dwarven_kingdoms" could be removed entirely, in favour of a new tag "nations". This reduces the total number of tags
+## ⚙️ Configuration
 
-# Usage
+Your config.yaml should define how to interpret tags and folder rules:
 
-`python3 organize.py` will re-organize a folder named `obsidian_vault` within the same directory as the script.
+```yaml
+vault_root: path/to/your/vault
+default_folder: Uncategorized
+category_rules:
+  people: 1_People
+  locations: 2_Locations
+  factions: 3_Factions
+subcategory_rules:
+  locations:
+    Wilderness:
+      - Forests
+      - Seas
+    Settlements:
+      - Villages
+      - Cities
+tag_consolidation:
+  person: people
+  place: locations
+```
+
+## 🚀 Usage
+
+```bash
+python organize_vault.py
+```
+
+## 🗂️ Output Structure
+
+```text
+obsidian_vault/
+├── 1_People/
+│   └── Character_Name.md
+├── 2_Locations/
+│   ├── Wilderness/
+│   │   └── Forests/
+│   │       └── Dark_Wood.md
+│   └── Settlements/
+│       └── Villages/
+│           └── Riverbend.md
+├── 3_Factions/
+│   └── ...
+├── _indexes/
+│   ├── _people.md
+│   ├── _locations.md
+│   └── ...
+└── Uncategorized/
+    └── Notes_Without_Tags.md
+```
+
+## 👤 Author
+
+Created by Michael Kirkland
