@@ -256,9 +256,6 @@ def update_indexes(tag_to_files_map, vault_root):
 def organize_vault(vault_root):
     print(f"🔎 Scanning vault: {vault_root}")
 
-    # Only skip _indexes folder explicitly; allow traversal into all others
-    skip_folders = {"_indexes"}
-
     tag_to_files_map = {}
 
     for root, _, files in os.walk(vault_root):
