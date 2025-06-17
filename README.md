@@ -2,6 +2,8 @@
 
 This script automatically organizes an Obsidian vault by parsing tags in your Markdown files and moving them into structured folders based on configurable category and subcategory rules. It also updates tag-based indexes and cleans up unwanted files like redirects and templates.
 
+🧭 If you need to convert a MediaWiki XML dump into a clean, tag-driven Obsidian vault, check out my [MediaWiki to Obsidian Converter](https://github.com/mak-kirkland/mediawiki-to-obsidian).
+
 ## ✨ Features
 - 📁 Automatically moves notes into structured folders by tag
 - 🏷️ Normalizes, consolidates, and inherits parent tags
