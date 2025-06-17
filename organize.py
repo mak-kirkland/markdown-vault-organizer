@@ -3,6 +3,22 @@ import re
 import shutil
 import yaml
 import json
+import sys
+import argparse
+import logging
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Organize Obsidian vault based on tags")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose logging")
+    return parser.parse_args()
+
+args = parse_args()
+
+logging.basicConfig(
+    level=logging.DEBUG if args.verbose else logging.INFO,
+    format='%(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
 
 # Load configuration from YAML file
 with open('config.yaml', 'r', encoding='utf-8') as f:
@@ -78,7 +94,7 @@ def parse_yaml_frontmatter(filepath):
         with open(filepath, encoding="utf-8") as f:
             content = f.read()
     except Exception as e:
-        print(f"⚠️ Failed to read {filepath}: {e}")
+        logging.warn(f"⚠️ Failed to read {filepath}: {e}")
         return {}
 
     match = YAML_FRONTMATTER_REGEX.match(content)
@@ -88,7 +104,7 @@ def parse_yaml_frontmatter(filepath):
     try:
         return yaml.safe_load(match.group(1)) or {}
     except Exception as e:
-        print(f"⚠️ YAML parse error in {filepath}: {e}")
+        logging.warn(f"⚠️ YAML parse error in {filepath}: {e}")
         return {}
 
 def write_yaml_frontmatter(filepath, data, original_content):
@@ -194,7 +210,7 @@ def move_file(filepath, dest_folder, vault_root):
     if os.path.exists(dest_path):
         raise FileExistsError(f"❌ File already exists at destination: {dest_path}")
 
-    print(f"📁 Moving '{filename}' to '{dest_folder}/'")
+    logging.debug(f"📁 Moving '{filename}' to '{dest_folder}/'")
     shutil.move(filepath, dest_path)
     return dest_path
 
@@ -203,7 +219,7 @@ def update_tags_in_file(filepath, new_tags):
         with open(filepath, encoding="utf-8") as f:
             content = f.read()
     except Exception as e:
-        print(f"⚠️ Failed to read {filepath} for updating tags: {e}")
+        logging.warn(f"⚠️ Failed to read {filepath} for updating tags: {e}")
         return False
 
     match = YAML_FRONTMATTER_REGEX.match(content)
@@ -214,7 +230,7 @@ def update_tags_in_file(filepath, new_tags):
 
     yaml_data['tags'] = new_tags
     write_yaml_frontmatter(filepath, yaml_data, content)
-    print(f"📝 Updated tags in '{filepath}'")
+    logging.debug(f"📝 Updated tags in '{filepath}'")
     return True
 
 def update_indexes(tag_to_files_map, vault_root):
@@ -235,7 +251,7 @@ def update_indexes(tag_to_files_map, vault_root):
     for tag, path in current_index_files.items():
         if tag not in updated_tags:
             os.remove(path)
-            print(f"🗑️ Removed obsolete index: {tag}.md")
+            logging.debug(f"🗑️ Removed obsolete index: {tag}.md")
 
     # Rebuild valid index files with proper tagging
     for tag, files in tag_to_files_map.items():
@@ -251,10 +267,10 @@ def update_indexes(tag_to_files_map, vault_root):
         index_path = os.path.join(index_dir, f"_{tag}.md")
         with open(index_path, "w", encoding="utf-8") as f:
             f.write(content)
-        print(f"📄 Updated index for: {tag} (with tag references)")
+        logging.debug(f"📄 Updated index for: {tag}")
 
 def organize_vault(vault_root):
-    print(f"🔎 Scanning vault: {vault_root}")
+    logging.info(f"🔎 Scanning vault: {vault_root}")
 
     tag_to_files_map = {}
 
@@ -297,10 +313,10 @@ def organize_vault(vault_root):
                 try:
                     move_file(filepath, target_folder, vault_root)
                 except FileExistsError as e:
-                    print(f"⚠️ Skipped moving due to existing file: {e}")
+                    logging.info(f"⚠️ Skipped moving due to existing file: {e}")
 
     update_indexes(tag_to_files_map, vault_root)
-    print("✅ Vault organization complete!")
+    logging.info("✅ Vault organization complete!")
 
 if __name__ == "__main__":
     organize_vault(VAULT_ROOT)
