@@ -40,12 +40,12 @@ category_rules:
   factions: 3_Factions
 subcategory_rules:
   locations:
-    Wilderness:
-      - Forests
-      - Seas
-    Settlements:
-      - Villages
-      - Cities
+    wilderness:
+      - forests
+      - seas
+    settlements:
+      - villages
+      - cities
 tag_consolidation:
   person: people
   place: locations
