@@ -1,8 +1,10 @@
-# Obsidian Vault Organizer 🗃️
+# Markdown Vault Organizer 🗃️
 
-This script automatically organizes an Obsidian vault by parsing tags in your Markdown files and moving them into structured folders based on configurable category and subcategory rules.
+This script automatically organizes a Markdown vault by parsing tags in your Markdown files and moving them into structured folders based on configurable category and subcategory rules.
 
-🧭 If you need to convert a MediaWiki XML dump into a clean, tag-driven Obsidian vault, check out my [MediaWiki to Obsidian Converter](https://github.com/mak-kirkland/mediawiki-to-obsidian).
+📜 If you want a tool to build and connect your ideas, check out my app [Chronicler](https://github.com/mak-kirkland/chronicler).
+
+🧭 If you need to convert a MediaWiki XML dump into a clean, tag-driven vault, check out my [MediaWiki to Markdown Converter](https://github.com/mak-kirkland/mediawiki-to-markdown).
 
 ## ✨ Features
 - 📁 Automatically moves notes into structured folders by tag
